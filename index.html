@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ወርቄ COFFEE Menu</title>
+  <style>
+    :root {
+      --bg-dark: #1f110b;
+      --bg-card: rgba(43, 23, 14, 0.75);
+      --accent-gold: #d4af37;
+      --accent-warm: #f4a261;
+      --text-light: #fefae0;
+      --border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle, #3a2014 0%, #170b07 100%);
+      color: var(--text-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Canvas Background for Falling Coffee Beans */
+    #beanCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Main Container */
+    .dashboard-container {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Ethiopian Traditional Pattern Banner */
+    .cultural-banner {
+      width: 100%;
+      height: 24px;
+      background: repeating-linear-gradient(
+        45deg,
+        #2e7d32,
+        #2e7d32 15px,
+        #fbc02d 15px,
+        #fbc02d 30px,
+        #c62828 30px,
+        #c62828 45px
+      );
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    /* Header Section */
+    header {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+      padding: 30px 20px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .brand-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      margin-bottom: 5px;
+    }
+
+    .brand-subtitle {
+      font-size: 1.5rem;
+      letter-spacing: 4px;
+      color: #e0d8d0;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .motto {
+      font-style: italic;
+      color: var(--accent-warm);
+      font-size: 1.1rem;
+    }
+
+    /* Dashboard Grid Layout */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    /* Category Cards */
+    .menu-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2);
+    }
+
+    .category-header {
+      font-size: 1.6rem;
+      color: var(--accent-gold);
+      border-bottom: 2px solid var(--accent-gold);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Item Styling */
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+      font-size: 1rem;
+    }
+
+    .item-name {
+      font-weight: 500;
+      max-width: 75%;
+    }
+
+    .dots-leader {
+      flex-grow: 1;
+      border-bottom: 1px dotted rgba(254, 250, 224, 0.2);
+      margin: 0 8px;
+    }
+
+    .item-price {
+      font-weight: 700;
+      color: var(--accent-warm);
+    }
+
+    /* Footer / Info Section */
+    footer {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.1rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+
+    .info-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-block span {
+      color: var(--accent-gold);
+    }
+
+    .info-link {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .info-link:hover {
+      color: var(--accent-gold);
+      text-decoration: underline;
+    }
+
+    /* Responsive Tweaks */
+    @media (max-width: 600px) {
+      .brand-title { font-size: 2.5rem; }
+      .brand-subtitle { font-size: 1.2rem; }
+      footer { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="beanCanvas"></canvas>
+
+  <div class="dashboard-container">
+    <div class="cultural-banner"></div>
+    
+    <header>
+      <div class="brand-title">ወርቄ</div>
+      <div class="brand-subtitle">WORKE COFFEE</div>
+      <p class="motto">"Crafted with Care, Poured with Passion in Worke Coffee"</p>
+    </header>
+
+    <div class="menu-grid">
+      
+      <div class="menu-card">
+        <h2 class="category-header">☕ HOT DRINKS</h2>
+        
+        <div class="menu-item"><span class="item-name">WORKE SPECIAL COFFEE</span><span class="dots-leader"></span><span class="item-price">95</span></div>
+        <div class="menu-item"><span class="item-name">TEA / ሻይ</span><span class="dots-leader"></span><span class="item-price">50</span></div>
+        <div class="menu-item"><span class="item-name">FLAVORED TEA / ፍሌቨርድ</span><span class="dots-leader"></span><span class="item-price">60</span></div>
+        <div class="menu-item"><span class="item-name">ESPRESSO / ኤስፕሬሶ</span><span class="dots-leader"></span><span class="item-price">95</span></div>
+        <div class="menu-item"><span class="item-name">COFFEE / ቡና</span><span class="dots-leader"></span><span class="item-price">85</span></div>
+        <div class="menu-item"><span class="item-name">STEM COFFEE / ስቴም ቡና</span><span class="dots-leader"></span><span class="item-price">60</span></div>
+        <div class="menu-item"><span class="item-name">AMERICANO / አሜሪካኖ</span><span class="dots-leader"></span><span class="item-price">85</span></div>
+        <div class="menu-item"><span class="item-name">MACCHIATO / ማኪያቶ</span><span class="dots-leader"></span><span class="item-price">100</span></div>
+        <div class="menu-item"><span class="item-name">CAFÉ LATTE / ላቴ</span><span class="dots-leader"></span><span class="item-price">150</span></div>
+        <div class="menu-item"><span class="item-name">MACTHA LATTE / ማቻ ላቴ</span><span class="dots-leader"></span><span class="item-price">190</span></div>
+        <div class="menu-item"><span class="item-name">VANILLA LATTE / ቫኒላ ላቴ</span><span class="dots-leader"></span><span class="item-price">160</span></div>
+        <div class="menu-item"><span class="item-name">STEAMED MILK / ወተት</span><span class="dots-leader"></span><span class="item-price">100</span></div>
+        <div class="menu-item"><span class="item-name">CAPPUCCINO / ካፑቺኖ</span><span class="dots-leader"></span><span class="item-price">140</span></div>
+        <div class="menu-item"><span class="item-name">MOCHA / ሞካ</span><span class="dots-leader"></span><span class="item-price">150</span></div>
+        <div class="menu-item"><span class="item-name">FASTING MACCHIATO / የጾም ማኪያቶ</span><span class="dots-leader"></span><span class="item-price">200</span></div>
+        <div class="menu-item"><span class="item-name">CARAMEL MACCHIATO / ካራሜል ማኪያቶ</span><span class="dots-leader"></span><span class="item-price">150</span></div>
+        <div class="menu-item"><span class="item-name">SPECIAL TEA / ስፔሻል ሻይ</span><span class="dots-leader"></span><span class="item-price">150</span></div>
+        <div class="menu-item"><span class="item-name">GINGER TEA / ዝንጅብል ሻይ</span><span class="dots-leader"></span><span class="item-price">80</span></div>
+        <div class="menu-item"><span class="item-name">GINGER WITH HONEY / ዝንጅብል በHoney</span><span class="dots-leader"></span><span class="item-price">95</span></div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 25px;">
+        
+        <div class="menu-card">
+          <h2 class="category-header">🧊 COLD DRINKS</h2>
+          <div class="menu-item"><span class="item-name">ICED LEMON TEA</span><span class="dots-leader"></span><span class="item-price">140</span></div>
+          <div class="menu-item"><span class="item-name">ICED COFFEE</span><span class="dots-leader"></span><span class="item-price">120</span></div>
+          <div class="menu-item"><span class="item-name">ICED CARAMEL MACCHIATO</span><span class="dots-leader"></span><span class="item-price">180</span></div>
+          <div class="menu-item"><span class="item-name">ICED MOCHA</span><span class="dots-leader"></span><span class="item-price">180</span></div>
+          <div class="menu-item"><span class="item-name">FREDDO CAPPUCCINO</span><span class="dots-leader"></span><span class="item-price">170</span></div>
+          <div class="menu-item"><span class="item-name">COFFEE LEMONADE</span><span class="dots-leader"></span><span class="item-price">160</span></div>
+          <div class="menu-item"><span class="item-name">ICED LATTE</span><span class="dots-leader"></span><span class="item-price">160</span></div>
+          <div class="menu-item"><span class="item-name">ICED MATCHA LATTE</span><span class="dots-leader"></span><span class="item-price">195</span></div>
+          <div class="menu-item"><span class="item-name">WATER ½</span><span class="dots-leader"></span><span class="item-price">50</span></div>
+        </div>
+
+        <div class="menu-card">
+          <h2 class="category-header">🍹 MOJITO</h2>
+          <div class="menu-item"><span class="item-name">STRAWBERRY</span><span class="dots-leader"></span><span class="item-price">190</span></div>
+          <div class="menu-item"><span class="item-name">ORANGE</span><span class="dots-leader"></span><span class="item-price">200</span></div>
+          <div class="menu-item"><span class="item-name">GINGER</span><span class="dots-leader"></span><span class="item-price">180</span></div>
+          <div class="menu-item"><span class="item-name">WATERMELON</span><span class="dots-leader"></span><span class="item-price">180</span></div>
+          <div class="menu-item"><span class="item-name">LEMON</span><span class="dots-leader"></span><span class="item-price">190</span></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <footer>
+      <div class="info-block">
+        <span>📍</span> 
+        <a class="info-link" href="https://maps.google.com/?q=XPMH%2B25C,+Addis+Ababa" target="_blank">
+          XPMH+25C Mekanisa Abo, Addis Ababa
+        </a>
+      </div>
+      <div class="info-block">
+        <span>📞</span> 
+        <a class="info-link" href="tel:+251949155555">
+          +251-949155555
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('beanCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Create roasted coffee bean particles
+    const beanCount = 35;
+    const beans = [];
+
+    class CoffeeBean {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20 - Math.random() * 100;
+        this.size = Math.random() * 12 + 10;
+        this.speedY = Math.random() * 1.5 + 0.8;
+        this.speedX = Math.random() * 0.6 - 0.3;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.03;
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.rotation += this.rotationSpeed;
+
+        if (this.y > canvas.height + 30) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = this.opacity;
+
+        // Dark roasted bean color
+        ctx.fillStyle = '#3d2314';
+        ctx.strokeStyle = '#1f0d05';
+        ctx.lineWidth = 1;
+
+        // Draw oval bean shape
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.size, this.size * 0.65, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Draw center crease of roasted coffee bean
+        ctx.beginPath();
+        ctx.strokeStyle = '#6a432d';
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(-this.size * 0.7, 0);
+        ctx.bezierCurveTo(-this.size * 0.2, -this.size * 0.2, this.size * 0.2, this.size * 0.2, this.size * 0.7, 0);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < beanCount; i++) {
+      beans.push(new CoffeeBean());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      beans.forEach(bean => {
+        bean.update();
+        bean.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
